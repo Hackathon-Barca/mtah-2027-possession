@@ -410,9 +410,11 @@ Both teams that tried it dropped it:
     within 2 m of the tracked ball.
   - FootAndBall (Komorowski et al. 2020) is under 5% within 2 m.
   - The ball is 3–5 px in the wide view.
-- **A promising but untested idea.** Fine-tune a small detector on *this camera*. The labels come
-  for free: project the ~113k tracked ball positions into the video through the homography. That
-  is not hand labelling, so it is allowed.
+- **Ruled out by the organisers.** Fine-tuning a small detector on *this camera*, with labels made
+  by projecting the ~113k tracked ball positions into the video through the homography, is **not
+  allowed**: the organisers ruled that using the provided tracking and homography as labels on the
+  provided match's video counts as labelling the provided dataset ([upstream issue](https://github.com/metrica-sports/more-than-a-hack-2027/issues/2)). A detector
+  trained on other games' data, with its source documented, would be allowed.
 - **Related idea.** Wang et al. turn ball tracking around: decide which player, if anyone, has the
   ball ([CVIU 2014](https://infoscience.epfl.ch/record/185107)).
 - **Value is capped.**
@@ -528,8 +530,9 @@ out.
 1. **Broadcast alignment for dead-ball evidence (approach 7).**
    - CPU, medium cost, and the largest measured dead/alive gain (0.875 → 0.952 accuracy).
    - It could arguably be v1.5, not ambitious.
-2. **Ball detector fine-tuned on this camera.**
-   - Auto-labels come from tracked ball positions projected through the homography.
+2. **Ball detector trained on other games' video.**
+   - Training it on this match's video with homography-projected tracking as labels is not allowed
+     ([upstream issue](https://github.com/metrica-sports/more-than-a-hack-2027/issues/2)); the training data must come from other games and be documented.
    - Run it only on live missing-ball frames and around stoppage edges, to time restarts and
      ball-outs frame-accurately.
    - Needs MPS or a GPU. Value is capped at about +0.03 spellF1 for gap filling; more if it fixes

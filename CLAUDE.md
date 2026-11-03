@@ -24,5 +24,6 @@ The submission repository becomes public before the deadline, so every commit is
 - Use the terms in `GLOSSARY.md`; when a new domain word appears, settle it there.
 - `evaluation/`, `starter/` and `games.py` are vendored from [metrica-sports/more-than-a-hack-2027](https://github.com/metrica-sports/more-than-a-hack-2027). Keep `evaluation/` byte-identical to upstream so local scores match the official scorer.
 - Run `python evaluation/validate_submission.py <file>` on the exact file before it is submitted.
-- The public window checks that the pipeline is *correct*; choosing between two versions on it overfits (see `docs/challenge/EVALUATION.md`).
+- The public window checks that the pipeline is *correct*. The rules forbid training or tuning on it, and choosing between two versions on it overfits (see `docs/challenge/RULES.md` and `EVALUATION.md`).
+- No hand labels on the provided match may train or validate a model; labels from other games are fine (`docs/challenge/RULES.md`). The organisers also ruled out training a detector on this match's video with the provided tracking as labels ([upstream issue](https://github.com/metrica-sports/more-than-a-hack-2027/issues/2)).
 - Planning lives in GitHub issues as a wayfinder map (label `wayfinder:map`); use `/wayfinder` to work it.
