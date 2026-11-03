@@ -61,5 +61,5 @@ The CSV of exactly 199,319 frames and labels that the team sends, named `NoLook.
 _Avoid_: prediction file, output, results
 
 **Public window**:
-The first five minutes of play (frames 11185–18684) whose ground truth is published; a correctness check, never a way to choose between versions.
+The first five minutes of play (frames 11185–18684) whose ground truth is published; a correctness check only. By rule it is never training data or a tuning set, and choosing between versions on it overfits (`docs/challenge/RULES.md`).
 _Avoid_: test set, validation set, leaderboard
