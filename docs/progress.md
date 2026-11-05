@@ -20,7 +20,7 @@ Changed: added `CONTRIBUTING.md` (area owners, rhythm, git flow, running code on
 this log.
 Numbers: none
 
-## 2026-11-05: Glossary terms from the validation protocol (#PR)
+## 2026-11-05: Glossary terms from the validation protocol (#19)
 Author: Ruan Carlos
 Changed: added **Bench** and **Sanity check** to `GLOSSARY.md`, the two terms settled by
 [Protocolo de validação sem overfitting](https://github.com/Hackathon-Barca/mtah-2027-possession/issues/9).
