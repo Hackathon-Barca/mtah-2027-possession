@@ -63,3 +63,11 @@ _Avoid_: prediction file, output, results
 **Public window**:
 The first five minutes of play (frames 11185–18684) whose ground truth is published; a correctness check only. By rule it is never training data or a tuning set, and choosing between versions on it overfits (`docs/challenge/RULES.md`).
 _Avoid_: test set, validation set, leaderboard
+
+**Bench**:
+Labelled matches from other games, made to look like the provided tracking and relabelled to this challenge's possession convention; the only place where two versions of the system are compared.
+_Avoid_: validation set, test set, DFL (one source of the bench, not the bench)
+
+**Sanity check**:
+A label-free look at our own output on the provided match, such as its possession count, that can reveal a bug but never chooses between versions or sets a value.
+_Avoid_: health check, target, tuning
