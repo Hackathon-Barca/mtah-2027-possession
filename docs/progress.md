@@ -33,3 +33,11 @@ Changed: Python 3.15.2 and uv (`pyproject.toml`, `uv.lock`), `src/nolook/` with 
 `python -m nolook.check_bundle`, pytest on synthetic data, ADR 0001, README and CONTRIBUTING.
 Numbers: data bundle check on the reference machine: 199,319 tactical and 164,488 broadcast ATD
 records, homography rows equal, 638 Smart Tagging instances, all matching DATA.md.
+
+## 2026-11-12: Starter facts report
+Author: João Victor Borges
+Changed: `python -m nolook.starter_facts`, which regenerates the baselines outside the repository,
+compares them byte for byte with the committed ones, checks the tracking and Smart Tagging counts
+against `DATA.md`, lists the channels in the ATD metadata and executes the starter notebooks in
+memory; the `starter` dependency group (kloppy 3.18.0, matplotlib, notebook).
+Numbers: none yet; each machine's output goes to the planning ticket.
