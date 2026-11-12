@@ -33,3 +33,17 @@ Changed: Python 3.15.2 and uv (`pyproject.toml`, `uv.lock`), `src/nolook/` with 
 `python -m nolook.check_bundle`, pytest on synthetic data, ADR 0001, README and CONTRIBUTING.
 Numbers: data bundle check on the reference machine: 199,319 tactical and 164,488 broadcast ATD
 records, homography rows equal, 638 Smart Tagging instances, all matching DATA.md.
+
+## 2026-11-12: Starter facts report
+Author: João Victor Borges
+Changed: `python -m nolook.starter_facts`, which regenerates the baselines outside the repository,
+compares them byte for byte with the committed ones, checks the tracking and Smart Tagging counts
+against `DATA.md`, lists the channels in the ATD metadata and executes the starter notebooks in
+memory; the `starter` dependency group (kloppy 3.18.0, matplotlib, notebook).
+Numbers: on the reference machine (i5-13420H, 23 GiB, Python 3.15.2), the four regenerated
+baselines are byte-identical to the committed ones and score smooth50 0.3256, smooth125 0.4242 on
+the public window, as in EVALUATION.md. Reading the tactical ATD and labelling every frame takes
+0.8 s with a 54 MB peak. Tracking and Smart Tagging counts all match DATA.md; objects seen per
+frame average 19.0 tactical (max 35) and 11.5 broadcast (max 24) over all frames. The ATD metadata
+declares only x, y and s (speed) for the ball: no live/dead or owner channel. The three starter
+notebooks run. The other machines' outputs go to the planning ticket.

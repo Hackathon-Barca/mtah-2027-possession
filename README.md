@@ -48,6 +48,17 @@ uv run python -m nolook.check_bundle
 
 It prints file sizes and record counts only, and says whether they match `DATA.md`.
 
+The starter notebooks need kloppy, matplotlib and Jupyter, which live in the `starter` dependency
+group. One command runs the whole starter on the data and prints aggregate facts only: the time
+and memory of reading the tracking, whether the regenerated baselines are byte-identical to the
+committed ones, the tracking and Smart Tagging counts against `DATA.md`, the channels declared in
+the tracking metadata, and whether each notebook runs:
+
+```bash
+uv sync --group starter
+uv run --group starter python -m nolook.starter_facts
+```
+
 ## Reproducing NoLook.csv
 
 | | |
