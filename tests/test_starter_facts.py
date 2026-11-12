@@ -51,7 +51,8 @@ def test_metadata_summary_reports_schema_and_extra_ball_channels(tmp_path):
         '<Main xmlns="urn:example"><Teams><Team id="T1"><Name>Secret FC</Name></Team></Teams>'
         '<Channels><Channel id="x"/><Channel id="y"/><Channel id="speed"/></Channels>'
         '<PlayerChannels><PlayerChannel id="p1_x" channelId="x"/></PlayerChannels>'
-        '<SplitRegister><BallChannelRef channelId="ball_x"/><BallChannelRef channelId="ball_y"/>'
+        '<SplitRegister><BallChannelRef channelId="x"/><BallChannelRef channelId="y"/>'
+        '<BallChannelRef channelId="s"/>'
         '<BallChannelRef channelId="ball_status"/></SplitRegister></Main>')
     summary = starter_facts.metadata_summary(meta)
     assert summary["channels"] == ["speed", "x", "y"]

@@ -70,7 +70,8 @@ EXPECTED_TYPES = {
 }
 
 # A ball channel id that is plainly position or speed. Anything else is worth a human look.
-POSITION_OR_SPEED = re.compile(r"(^|[_\-\s])(x|y|z)$|position|speed|velocity", re.IGNORECASE)
+# Metrica names them x, y and s (speed, m/s; kloppy's "1_s" columns).
+POSITION_OR_SPEED = re.compile(r"(^|[_\-\s])(x|y|z|s)$|position|speed|velocity", re.IGNORECASE)
 # Schema names that would hint at a ball state or an owner.
 STATE_HINT = re.compile(r"status|state|alive|live|dead|owner|possess", re.IGNORECASE)
 
