@@ -38,6 +38,15 @@ A planning issue belongs to the owner of its area. João Vitor Alves drives the 
 - GitHub does not enforce branch protection on this private repository, so these rules hold by
   agreement.
 
+## Environment
+
+- Python 3.15.2 and uv. `uv sync` sets everything up; add a dependency with `uv add`, which updates
+  `pyproject.toml` and `uv.lock` together. Changing the Python version is a new planning decision.
+- Our code lives in `src/nolook/`. `evaluation/`, `starter/` and `games.py` are vendored and not
+  edited; the vendored `requirements*.txt` stay as they are.
+- Scripts only. Notebooks are fine for exploring locally, but they are never committed.
+- Tests use synthetic data only: `uv run pytest`.
+
 ## Running code on the match data
 
 The match data never reaches a hosted LLM, and frame-level data never enters git or issues (see
@@ -45,8 +54,10 @@ The match data never reaches a hosted LLM, and frame-level data never enters git
 
 - Whoever opens a pull request runs it on their own machine and pastes **aggregate output only**
   into the pull request: scores, counts, durations, validator messages.
-- When a pull request changes `NoLook.csv`, the reviewer runs it again and checks that the file's
-  hash matches.
+- When a pull request changes `NoLook.csv`, the owner of the reference machine (Data and
+  environment) runs `uv run python -m nolook` twice on it and pastes both SHA-256 hashes into the
+  pull request; they must be equal. The official file comes only from that platform, see
+  [docs/adr/0001-linux-only-generation.md](docs/adr/0001-linux-only-generation.md).
 
 ## Recording progress
 
