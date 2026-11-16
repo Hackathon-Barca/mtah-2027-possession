@@ -57,4 +57,8 @@ read into one `Half` per half (`match.py`), distance evidence with a control rad
 the halves. Edge refinement left out. Parameters in `params.py` are provisional physical values:
 the bench was not ready, and the public window is never used to set them. `python -m nolook.sanity`
 prints aggregate bug checks.
-Numbers: on a full-size synthetic bundle, 3.6 s and 0.5 GB peak. Real run pending.
+Numbers: on the reference machine, two runs gave the same SHA-256
+(`ccae5938ef1419e776eee69449611adfdd966fa9479d13662e445a573efd5172`). Graded frames: H 66,558,
+A 42,167, D 50,132 (31.6%); 573 possessions (mean 7.6 s, median 4.4 s), 159 dead spells (mean
+12.7 s). Public window, as a bug check only: macroF1 0.6773, spellF1 0.3220, against 0.6207 and
+0.3256 for baseline_smooth50.
