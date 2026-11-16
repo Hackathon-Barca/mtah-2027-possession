@@ -9,8 +9,7 @@ ball — `H`, `A`, `D` (dead ball) or `X` (abstain). Ranked on `spellF1`; the pu
 
 > **Status:** v1 (V1-A: distance rules + a 4-state Viterbi on the tactical tracking) runs end to
 > end. Its parameters are provisional physical values, not fitted to anything (see
-> `src/nolook/params.py`). The technical document lands here before the submission deadline
-> (November 17, 2026).
+> `src/nolook/params.py`). The technical document is [docs/NoLook.md](docs/NoLook.md).
 
 ## Layout
 
