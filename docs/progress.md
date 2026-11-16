@@ -62,3 +62,10 @@ Numbers: on the reference machine, two runs gave the same SHA-256
 A 42,167, D 50,132 (31.6%); 573 possessions (mean 7.6 s, median 4.4 s), 159 dead spells (mean
 12.7 s). Public window, as a bug check only: macroF1 0.6773, spellF1 0.3220, against 0.6207 and
 0.3256 for baseline_smooth50.
+
+## 2026-11-16: Technical document draft
+Author: João Victor Borges
+Changed: `docs/NoLook.md`, the technical document for the submission form (approach, assets used
+and dropped, training data, possession rules, parameters, measurements, limitations,
+reproduction, credits); linked from `README.md`.
+Numbers: the V1-A run above.
