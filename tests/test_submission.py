@@ -9,7 +9,7 @@ import sys
 
 import pytest
 
-from games import GAME, GAMES
+from games import GAME, GAMES, half_video_blocks
 from nolook import REPO_ROOT, pipeline, submission
 
 N_FRAMES = GAMES[GAME]["n_video_frames"]
@@ -32,15 +32,23 @@ def test_two_writes_have_the_same_hash(tmp_path):
     assert first == hashlib.sha256((tmp_path / "a.csv").read_bytes()).hexdigest()
 
 
-def test_placeholder_covers_every_frame():
-    labels = pipeline.label_frames()
+def synthetic_match_labels():
+    """Full-length labels laid out like the pipeline's: H/A/D in the halves, X outside."""
+    pieces = [(first, (["H", "A", "D"] * (last - first + 1))[:last - first + 1])
+              for _, first, last in half_video_blocks(GAME)]
+    return pipeline.assemble(N_FRAMES, pieces)
+
+
+def test_every_graded_frame_gets_a_label():
+    labels = synthetic_match_labels()
     assert len(labels) == N_FRAMES
-    assert set(labels) == {"X"}
+    graded = sum(last - first + 1 for _, first, last in half_video_blocks(GAME))
+    assert sum(label != "X" for label in labels) == graded == 158857
 
 
 def test_official_validator_accepts_the_output(tmp_path):
     path = tmp_path / "NoLook.csv"
-    submission.write(pipeline.label_frames(), path)
+    submission.write(synthetic_match_labels(), path)
     result = subprocess.run(
         [sys.executable, str(REPO_ROOT / "evaluation" / "validate_submission.py"), str(path)],
         capture_output=True, text=True)

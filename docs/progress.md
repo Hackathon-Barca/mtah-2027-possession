@@ -47,3 +47,14 @@ the public window, as in EVALUATION.md. Reading the tactical ATD and labelling e
 frame average 19.0 tactical (max 35) and 11.5 broadcast (max 24) over all frames. The ATD metadata
 declares only x, y and s (speed) for the ball: no live/dead or owner channel. The three starter
 notebooks run. The other machines' outputs go to the planning ticket.
+
+## 2026-11-16: V1-A pipeline
+Author: João Victor Borges
+Changed: `python -m nolook` now runs the V1-A from the v1 architecture decision: the tactical ATD
+read into one `Half` per half (`match.py`), distance evidence with a control radius
+(`evidence.py`), a hand-set dead-ball logistic (`dead_ball.py`) and a Viterbi over
+{H, A, D_H, D_A} with minimum durations (`decode.py`); H/A/D on every graded frame, X only outside
+the halves. Edge refinement left out. Parameters in `params.py` are provisional physical values:
+the bench was not ready, and the public window is never used to set them. `python -m nolook.sanity`
+prints aggregate bug checks.
+Numbers: on a full-size synthetic bundle, 3.6 s and 0.5 GB peak. Real run pending.

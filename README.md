@@ -7,14 +7,22 @@ The task: for every frame of FC Barcelona vs Athletic Club (LaLiga 2024-25), say
 ball — `H`, `A`, `D` (dead ball) or `X` (abstain). Ranked on `spellF1`; the published baseline is
 0.2433. The full challenge description is in [docs/challenge/](docs/challenge/README.md).
 
-> **Status:** environment set up; the v1 pipeline is in progress. `python -m nolook` currently
-> abstains on every frame. The approach and technical document land here before the submission
-> deadline (November 17, 2026).
+> **Status:** v1 (V1-A: distance rules + a 4-state Viterbi on the tactical tracking) runs end to
+> end. Its parameters are provisional physical values, not fitted to anything (see
+> `src/nolook/params.py`). The technical document lands here before the submission deadline
+> (November 17, 2026).
 
 ## Layout
 
 ```
 src/nolook/       our code: the pipeline and the one reproduction command
+  match.py          reads the tactical ATD into one Half per half, in metres
+  evidence.py       stage 1: who is at the ball (nearest player per team, control radius)
+  dead_ball.py      stage 2: is the ball dead (out of play, players walking)
+  decode.py         stage 3: Viterbi over {H, A, D_H, D_A} with minimum durations
+  pipeline.py       the stages per half, X only outside the two halves
+  params.py         every number the pipeline uses
+  sanity.py         aggregate bug check of a NoLook.csv
 tests/            pytest, synthetic data only
 docs/adr/         architecture decision records
 docs/challenge/   the official challenge docs (authoritative)
@@ -70,8 +78,13 @@ uv run --group starter python -m nolook.starter_facts
 | command | `uv run python -m nolook` |
 
 The command writes `submission/NoLook.csv`, runs the official validator on it and prints its
-SHA-256. It only runs inference; it never trains. The file is generated on this platform only, see
+SHA-256. It only runs inference; it never trains, and nothing in it is random. It takes a few
+seconds and about 0.5 GB of memory. The file is generated on this platform only, see
 [docs/adr/0001-linux-only-generation.md](docs/adr/0001-linux-only-generation.md).
+
+`uv run python -m nolook.sanity` then prints aggregates of the file and of the signals behind it,
+with the official scoreboard on the public window. That is a bug check: the public window is never
+used to choose a version or a parameter.
 
 ## Credits
 
