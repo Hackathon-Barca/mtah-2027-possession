@@ -22,6 +22,8 @@ src/nolook/       our code: the pipeline and the one reproduction command
   pipeline.py       the stages per half, X only outside the two halves
   params.py         every number the pipeline uses
   sanity.py         aggregate bug check of a NoLook.csv
+  bench.py          the bench: the pipeline on 7 degraded DFL matches, against the baseline
+bench_data/       the bench download script; the bench data itself stays outside the repo
 tests/            pytest, synthetic data only
 docs/adr/         architecture decision records
 docs/challenge/   the official challenge docs (authoritative)
