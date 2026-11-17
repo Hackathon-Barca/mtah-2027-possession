@@ -22,13 +22,13 @@ def centred_mean(values, window):
         return np.where(counted > 0, (total[high] - total[low]) / counted, np.nan)
 
 
-def team_speed(speed, window=params.SPEED_WINDOW):
-    """Mean speed of the tracked players, smoothed; SLOW_SPEED (neutral) where nobody is tracked."""
+def team_speed(speed, window=params.SPEED_WINDOW, neutral=params.SLOW_SPEED):
+    """Mean speed of the tracked players, smoothed; `neutral` where nobody is tracked."""
     valid = ~np.isnan(speed)
     count = valid.sum(axis=1)
     per_frame = np.where(count > 0, np.where(valid, speed, 0.0).sum(axis=1) / np.maximum(count, 1),
                          np.nan)
-    return np.nan_to_num(centred_mean(per_frame, window), nan=params.SLOW_SPEED)
+    return np.nan_to_num(centred_mean(per_frame, window), nan=neutral)
 
 
 def out_of_play(ball, pitch, margin=params.OUT_MARGIN):
@@ -39,14 +39,15 @@ def out_of_play(ball, pitch, margin=params.OUT_MARGIN):
         return (x < -margin) | (x > length + margin) | (y < -margin) | (y > width + margin)
 
 
-def dead_probability(speed, ball, pitch):
-    """P(ball dead) per frame."""
-    pace = team_speed(speed)
-    slow = pace < params.SLOW_SPEED
+def dead_probability(speed, ball, pitch, cfg=None):
+    """P(ball dead) per frame. cfg: params.current(), with any overrides."""
+    cfg = cfg or params.current()
+    pace = team_speed(speed, cfg["SPEED_WINDOW"], cfg["SLOW_SPEED"])
+    slow = pace < cfg["SLOW_SPEED"]
     missing = np.isnan(ball[:, 0])
-    logit = (params.DEAD_BIAS
-             + params.DEAD_W_OUT * out_of_play(ball, pitch)
-             + params.DEAD_W_SLOW * (params.SLOW_SPEED - pace)
-             + params.DEAD_W_MISSING_SLOW * (missing & slow))
+    logit = (cfg["DEAD_BIAS"]
+             + cfg["DEAD_W_OUT"] * out_of_play(ball, pitch, cfg["OUT_MARGIN"])
+             + cfg["DEAD_W_SLOW"] * (cfg["SLOW_SPEED"] - pace)
+             + cfg["DEAD_W_MISSING_SLOW"] * (missing & slow))
     probability = 1.0 / (1.0 + np.exp(-logit))
-    return np.clip(probability, params.DEAD_CLIP, 1.0 - params.DEAD_CLIP)
+    return np.clip(probability, cfg["DEAD_CLIP"], 1.0 - cfg["DEAD_CLIP"])

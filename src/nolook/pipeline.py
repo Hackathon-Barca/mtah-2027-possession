@@ -10,15 +10,17 @@ if the bench showed a gain, and the bench was not ready. Parameters are in param
 import numpy as np
 
 from games import GAME, GAMES
-from nolook import dead_ball, decode, evidence, match
+from nolook import dead_ball, decode, evidence, match, params
 
 
-def label_half(half):
-    """H/A/D for every frame of one Half."""
-    ball = evidence.interpolate_ball(half.ball)
-    p_home = evidence.possession_evidence(half.players, half.team, ball)
-    p_dead = dead_ball.dead_probability(half.speed, ball, half.pitch)
-    return decode.to_labels(decode.decode(p_home, p_dead))
+def label_half(half, cfg=None):
+    """H/A/D for every frame of one Half. cfg overrides parameters (the bench only)."""
+    cfg = cfg or params.current()
+    ball = evidence.interpolate_ball(half.ball, cfg["BALL_GAP_MAX"])
+    p_home = evidence.possession_evidence(half.players, half.team, ball, cfg["CONTROL_RADIUS"],
+                                          cfg["EVIDENCE_SCALE"], cfg["EVIDENCE_CLIP"])
+    p_dead = dead_ball.dead_probability(half.speed, ball, half.pitch, cfg)
+    return decode.to_labels(decode.decode(p_home, p_dead, cfg))
 
 
 def assemble(n_frames, pieces):

@@ -43,3 +43,14 @@ RESTART_COST = 1.0        # play restarts with the team that was set to restart
 DEAD_SWAP_COST = 30.0     # the restarting team changes while the ball stays dead
 MIN_POSSESSION = 25       # frames (1 s); shorter spells are what the metric punishes most
 MIN_DEAD = 50             # frames (2 s); a restart takes longer than this to set up
+
+
+def current(**overrides):
+    """Every parameter above as a dict, with overrides applied. The bench passes candidates this way;
+    the submission always runs with no overrides."""
+    values = {name: value for name, value in globals().items() if name.isupper()}
+    unknown = set(overrides) - set(values)
+    if unknown:
+        raise KeyError("unknown parameters: {}".format(sorted(unknown)))
+    values.update(overrides)
+    return values

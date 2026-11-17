@@ -47,7 +47,8 @@ We built the rules version (internally "V1-A") as the first version, and it is w
 - the same scaffold accepts a trained evidence module later.
 
 The trained variant (gradient boosting on the DFL/IDSSE open tracking, degraded to look like this
-ATD) depended on a validation bench that we did not finish in time.
+ATD) needed the validation bench (section 6) earlier than we could build it. The bench was ready
+on the last day and was used only to validate the rules version and to test its parameters.
 
 ### Decoder
 A first-order decoder gives three properties:
@@ -75,11 +76,21 @@ checked this on the metadata schema. So whether the ball is dead has to be infer
 
 ## 3. Training data
 
-**None.** No model is trained, and no labelled dataset of any kind is used, from this game or any
-other. The parameters are set by hand (section 5).
+**No model is trained.** No labels from this game are used for anything.
 
-The planned bench, which nothing in this submission uses, was the 7 matches of the DFL/IDSSE open
-tracking dataset (Bassek et al. 2025, *Scientific Data*, CC-BY 4.0), degraded to match this ATD.
+**One labelled dataset, used for validation only:** the IDSSE open dataset (Bassek et al. 2025,
+*Scientific Data*, CC-BY 4.0).
+- **What it is:** 7 Bundesliga 2022/23 matches with official DFL positional data at 25 Hz, about
+  1 million frames in all.
+- **Where we got it:** the PySport mirror at `huggingface.co/datasets/pysport/idsse-data`;
+  `bench_data/download.sh` fetches it.
+- **Who labelled it and how:** the labels are the per-frame ball status (alive or dead) and
+  owning team that the DFL data provider (Sportec Solutions) delivers with its tracking. Nobody on
+  our team labelled anything. We turn them into `H`/`A`/`D` mechanically, the same way the
+  challenge ground truth is derived from corrected tracking (CHALLENGE.md).
+- **What it was used for:** to compare the rules against the official baseline, and to test
+  whether other parameter values would help (section 6). They did not pass the bar, so every
+  submitted value is still the hand-set one in section 5.
 
 ## 4. The possession rules we implemented
 
@@ -138,11 +149,12 @@ Every number lives in `src/nolook/params.py`:
 | switch / dead / restart costs | 6, 6, 1 (nats) | about 3 frames of strong contrary evidence |
 | minimum possession / dead-ball stretch | 1 s / 2 s | possession: the blip cost above; stretch: as in other public Viterbi decoders |
 
-No value was moved after looking at any output of this match.
+No value was moved after looking at any output of this match. The bench (section 6) tested five of
+them and kept them all.
 
 ## 6. What we measured
 
-All of this is on our own output; none of it uses ground truth except the bug check at the end.
+On this match, all of this is on our own output; the only ground truth involved is the public window, as a bug check. The bench subsection uses other matches.
 
 - **Reproducibility.** Two runs give the same file, SHA-256
   `ccae5938ef1419e776eee69449611adfdd966fa9479d13662e445a573efd5172`. The run takes a few
@@ -165,6 +177,34 @@ All of this is on our own output; none of it uses ground truth except the bug ch
 
   This confirms the pipeline works. With 17 possessions the gap means nothing either way.
 
+### The bench: the same pipeline on other matches
+
+`python -m nolook.bench` runs the pipeline on the 7 IDSSE matches (section 3). It is the only place
+where versions or parameters are compared.
+
+**How the bench is built:**
+- **Degraded input,** so that it looks like this ATD: the ball is removed on about 40% of frames,
+  in runs averaging 1 s and twice as often while the ball is dead; players are dropped so that
+  about 20 of 22 are tracked; positions get noise; speed is recomputed from the noisy positions.
+- **One final-test match,** drawn with a fixed seed (J03WPY), takes no part in any choice.
+- **Five parameters tuned on a grid of 108 combinations:** minimum possession, switch cost,
+  control radius, walking speed and the dead-ball bias. They are chosen leave-one-match-out on
+  the other six matches.
+- **The rule for a change:** a paired bootstrap over the 12 held-out halves (1,000 draws), and the
+  change enters only if it wins at least 95% of draws.
+
+| on degraded DFL matches, spellF1 | official baseline `smooth50` | NoLook (submitted values) |
+|---|---|---|
+| bench, 6 matches, mean of 12 halves | 0.2235 | **0.2713**, ahead in 100% of draws |
+| final test match J03WPY | 0.2040 | **0.2723** |
+
+**Results:**
+- **Against the baseline:** the submitted pipeline beats the official baseline on matches it has
+  never seen, and the final test sits right at the bench mean.
+- **Parameter tuning:** the grid's best was a 2 s minimum possession instead of 1 s, with
+  everything else unchanged. It won only 87.1% of draws (bench 0.2768 against 0.2713), short of
+  the 95% bar. So **the hand-set values stay**.
+
 ## 7. Limitations, and what we would fix with more time
 
 - **Too many possessions.** 573 possessions with a 4.4 s median is roughly 1.6 times the ~360 a
@@ -172,17 +212,19 @@ All of this is on our own output; none of it uses ground truth except the bug ch
   - duels where both teams are within 2 m;
   - a short touch that is held for just over 1 s.
 
-  Each extra possession costs `spellF1`. **Fix:** a longer minimum possession, or a higher switch
-  cost, chosen on the bench, not on this match.
+  Each extra possession costs `spellF1`. A 2 s minimum possession helped on the bench, but not
+  reliably enough to pass our bar (section 6). **Fix:** more bench matches, so that a gain of that
+  size can be confirmed.
 - **Too little dead ball.** 31.6% of graded time is labelled `D`. The literature and other teams
   point to 45–50%: the ball is in play for about 51–55 of the ~106 graded minutes, with about 108
   interruptions per elite match (Siegle & Lames 2012). Our 159 stretches are about the right
   *number*, so they are too short: they start late and end early. A walking-speed rule waits
   until the players have slowed. **Fix:** date the start of each stretch back to where the speed
   started to fall, as another entry does with a two-threshold rule, and add set-piece formations.
-- **Parameters are untuned.** The validation bench (7 DFL/IDSSE matches, degraded, leave-one-match-
-  out, paired bootstrap) was designed but not finished before the deadline. Every value in
-  section 5 is a physical guess. **Fix:** finish the bench and tune at most 5 parameters on it.
+- **The bench is only an approximation of this match.** Its degradation copies this ATD's overall
+  rates, not its exact failure modes: identity switches, duplicated players, and when exactly the
+  ball goes missing. Bench numbers rank versions; they do not predict this match's score.
+  **Fix:** match the degradation to more of the ATD's aggregate statistics.
 - **The ball is the bottleneck.** It is missing on 41% of graded frames, disproportionately at the
   moments that matter. The rules use no ball-free cue such as team shape. **Fix:** add team-shape
   features, which other entries report agree with possession on 83–87% of live frames.
@@ -202,6 +244,15 @@ export MTAH_DATA_DIR=/path/to/bundle     # the official data bundle, unpacked as
 uv run python -m nolook.check_bundle     # optional: the bundle is complete and its counts match
 uv run python -m nolook                  # writes submission/NoLook.csv, validates it, prints SHA-256
 uv run python -m nolook.sanity           # optional: aggregate bug check
+```
+
+The bench is separate, and the submission never needs it:
+
+```bash
+bench_data/download.sh ~/dfl_idsse                                   # 2.5 GB, outside the repo
+uv sync --group starter
+uv run --group starter python -m nolook.bench convert ~/dfl_idsse    # ~3 min
+uv run python -m nolook.bench run ~/dfl_idsse                        # ~5 min on 12 cores
 ```
 
 The expected SHA-256 is the one in section 6. `uv run pytest` runs the tests, all on synthetic

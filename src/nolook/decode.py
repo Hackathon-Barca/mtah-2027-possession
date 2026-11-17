@@ -84,10 +84,13 @@ def viterbi(costs, transition, min_frames):
     return path
 
 
-def decode(p_home, p_dead):
-    """State per frame for one half."""
-    min_frames = [params.MIN_POSSESSION, params.MIN_POSSESSION, params.MIN_DEAD, params.MIN_DEAD]
-    return viterbi(emission_costs(p_home, p_dead), transition_costs(), min_frames)
+def decode(p_home, p_dead, cfg=None):
+    """State per frame for one half. cfg: params.current(), with any overrides."""
+    cfg = cfg or params.current()
+    min_frames = [cfg["MIN_POSSESSION"], cfg["MIN_POSSESSION"], cfg["MIN_DEAD"], cfg["MIN_DEAD"]]
+    transition = transition_costs(cfg["SWITCH_COST"], cfg["DEAD_COST"], cfg["RESTART_COST"],
+                                  cfg["DEAD_SWAP_COST"])
+    return viterbi(emission_costs(p_home, p_dead), transition, min_frames)
 
 
 def to_labels(states):

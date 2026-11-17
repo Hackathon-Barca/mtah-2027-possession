@@ -69,3 +69,15 @@ Changed: `docs/NoLook.md`, the technical document for the submission form (appro
 and dropped, training data, possession rules, parameters, measurements, limitations,
 reproduction, credits); linked from `README.md`.
 Numbers: the V1-A run above.
+
+## 2026-11-17: Bench and parameter check (#29)
+Author: João Victor Borges
+Changed: `python -m nolook.bench` and `bench_data/download.sh`. The 7 IDSSE matches (DFL; Bassek et
+al. 2025, CC-BY 4.0) are degraded to look like the BAR-ATH ATD and labelled H/A/D from DFL ball
+status and owner. One match (J03WPY, seed 2027) is the final test. Five parameters are tuned on a
+108-combination grid, leave-one-match-out on the other six, with a paired bootstrap over 12 halves.
+The pipeline now accepts parameter overrides (`params.current`); with none it gives the same
+labels as before.
+Numbers: frozen V1-A 0.2713 on the bench against 0.2235 for the official baseline (V1-A ahead in
+100% of 1,000 draws); final test 0.2723 against 0.2040. Best grid point (2 s minimum possession)
+0.2768, ahead in only 87.1% of draws, below the 95% bar: the submitted parameters stay.
