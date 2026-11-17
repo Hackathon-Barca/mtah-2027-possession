@@ -1,7 +1,13 @@
 # NoLook — ball possession from tracking alone
 
-Team **NoLook**, More than a Hack 2027, Phase 1. Repository:
-<https://github.com/Hackathon-Barca/mtah-2027-possession>.
+Team **NoLook**, More than a Hack 2027, Phase 1: João Victor Borges, Caio, Ruan Carlos,
+João Vitor Bueno and João Vitor Alves.
+
+| | |
+|---|---|
+| repository | <https://github.com/Hackathon-Barca/mtah-2027-possession> |
+| submitted file | `NoLook.csv`, SHA-256 `ccae5938ef1419e776eee69449611adfdd966fa9479d13662e445a573efd5172` |
+| command | `uv run python -m nolook` (section 8) |
 
 **In one paragraph.** For every frame of FC Barcelona vs Athletic Club, `NoLook.csv` says `H`, `A`
 or `D`. The labels come from the tactical tracking (ATD) alone, through three stages applied to
