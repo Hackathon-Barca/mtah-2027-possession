@@ -81,3 +81,9 @@ labels as before.
 Numbers: frozen V1-A 0.2713 on the bench against 0.2235 for the official baseline (V1-A ahead in
 100% of 1,000 draws); final test 0.2723 against 0.2040. Best grid point (2 s minimum possession)
 0.2768, ahead in only 87.1% of draws, below the 95% bar: the submitted parameters stay.
+
+## 2026-11-17: Final technical document (#26)
+Author: João Vitor Alves
+Changed: `docs/NoLook.md` now names the team and states the submitted file's SHA-256 and command at
+the top; `NoLook.pdf` is printed from it (not committed) for the submission form.
+Numbers: none
