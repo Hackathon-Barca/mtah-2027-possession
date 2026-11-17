@@ -1,7 +1,7 @@
 # NoLook — ball possession from tracking alone
 
-Team **NoLook**, More than a Hack 2027, Phase 1: João Victor Borges, Caio, Ruan Carlos,
-João Vitor Bueno and João Vitor Alves.
+Team **NoLook**, More than a Hack 2027, Phase 1: João Vitor Alves, João Victor Borges,
+João Vitor Bueno, Caio Fernandes Borges and Ruan Carlos Martins.
 
 | | |
 |---|---|
